@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>حاسبة الراتب ومستحقات الموظف | عبد الوهاب الشقحاء للذهب والمجوهرات</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Arabic Font Cairo from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+    }
+    
+    /* Print Specific Styles for Single A4 Page Output */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 0; /* Remove default margins to allow full background */
+      }
+      body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        font-size: 10.5px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        /* Add Background Image here */
+        background-image: url('نموذج إنهاء العلاقة التعاقدية.pdf.jpg') !important;
+        background-size: cover !important;
+        background-position: center top !important;
+        background-repeat: no-repeat !important;
+      }
+      /* Ensure content container respects print margins while background fills */
+      .print-only {
+        display: block !important;
+        padding: 35mm 15mm 15mm 25mm !important; /* Top margin to clear header, left margin to clear sidebar */
+        background-color: rgba(255, 255, 255, 0.8) !important; /* 80% white overlay to make background 20% visible */
+        min-height: 297mm; /* Ensure full A4 height */
+        box-sizing: border-box;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-only {
+        display: block !important;
+      }
+      .print-page-box {
+        border: 1px solid #d1d5db !important;
+        box-shadow: none !important;
+        padding: 10px !important;
+        border-radius: 8px !important;
+      }
+      /* Prevent awkward page breaks */
+      table, tr, td, th, div {
+        page-break-inside: avoid !important;
+      }
+    }
+
+    @media screen {
+      .print-only {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen py-6 px-3 sm:px-6">
+
+  <!-- ================= Screen Interactive Calculator ================= -->
+  <div class="max-w-4xl mx-auto space-y-6 no-print pb-16">
+    
+    <!-- Header Banner -->
+    <div class="bg-gradient-to-r from-amber-900 via-amber-800 to-amber-950 text-white p-6 sm:p-8 rounded-2xl shadow-xl flex flex-col sm:flex-row justify-between items-center gap-4 border-b-4 border-amber-500">
+      <div>
+        <div class="inline-block bg-amber-500/20 text-amber-200 text-xs font-bold px-3 py-1 rounded-full mb-2 border border-amber-400/30">
+          عبد الوهاب الشقحاء للذهب والمجوهرات
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold mb-1">حاسبة الراتب ومستحقات الموظف الشاملة</h1>
+        <p class="text-amber-100/90 text-xs sm:text-sm">حساب التأمينات الاجتماعية التلقائية، الإجازات، ومكافأة نهاية الخدمة وفق نظام العمل السعودي</p>
+      </div>
+      <button onclick="window.print()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold rounded-xl shadow-md border border-amber-300 flex items-center gap-2 transition-all cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+        </svg>
+        <span>طباعة التقرير (A4)</span>
+      </button>
+    </div>
+
+    <!-- Section 0: Company & Employee Information -->
+    <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6 space-y-4">
+      <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-3">
+        <span class="w-3 h-3 bg-amber-600 rounded-full inline-block"></span>
+        بيانات المنشأة والموظف (للتوثيق في التقرير الرسمي)
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="space-y-1">
+          <label for="companyName" class="block text-xs font-semibold text-slate-600">اسم المنشأة / الشركة</label>
+          <input 
+            type="text" 
+            id="companyName" 
+            value="عبد الوهاب الشقحاء للذهب والمجوهرات" 
+            onfocus="this.select()" 
+            oninput="calculateAll()"
+            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none font-semibold text-sm bg-slate-50/50"
+          />
+        </div>
+        <div class="space-y-1">
+          <label for="companyCr" class="block text-xs font-semibold text-slate-600">السجل التجاري / الرقم المميز</label>
+          <input 
+            type="text" 
+            id="companyCr" 
+            value="سجل تجاري: 1131054977 | الرقم المميز: 3022194302" 
+            onfocus="this.select()" 
+            oninput="calculateAll()"
+            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none font-semibold text-sm bg-slate-50/50"
+          />
+        </div>
+        <div class="space-y-1">
+          <label for="companyAddress" class="block text-xs font-semibold text-slate-600">العنوان والفرع</label>
+          <input 
+            type="text" 
+            id="companyAddress" 
+            value="القصيم - بريدة - طريق الملك فيصل" 
+            onfocus="this.select()" 
+            oninput="calculateAll()"
+            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none font-semibold text-sm bg-slate-50/50"
+          />
+        </div>
+        <div class="space-y-1">
+          <label for="employeeName" class="block text-xs font-semibold text-slate-600">اسم الموظف</label>
+          <input 
+            type="text" 
+            id="employeeName" 
+            value="" 
+            placeholder="أدخل اسم الموظف"
+            onfocus="this.select()" 
+            oninput="calculateAll()"
+            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none font-semibold text-sm"
+          />
+        </div>
+        <div class="space-y-1">
+          <label for="employeeId" class="block text-xs font-semibold text-slate-600">رقم الهوية / الإقامة</label>
+          <input 
+            type="text" 
+            id="employeeId" 
+            value="" 
+            placeholder="أدخل رقم الهوية أو الإقامة"
+            onfocus="this.select()" 
+            oninput="calculateAll()"
+            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none font-semibold text-sm"
+          />
+        </div>
+        <div class="space-y-1">
+          <label for="jobTitle" class="block text-xs font-semibold text-slate-600">المسمى الوظيفي / القسم</label>
+          <input 
+            type="text" 
+            id="jobTitle" 
+            value="" 
+            placeholder="أدخل المسمى الوظيفي"
+            onfocus="this.select()" 
+            oninput="calculateAll()"
+            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none font-semibold text-sm"
+          />
+        </div>
+        <div class="space-y-1 sm:col-span-2 lg:col-span-3">
+          <label for="managerName" class="block text-xs font-semibold text-slate-600">اسم المدير / المسؤول المستلم</label>
+          <input 
+            type="text" 
+            id="managerName" 
+            value="فهد بن سليمان المتوزي" 
+            onfocus="this.select()" 
+            oninput="calculateAll()"
+            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none font-semibold text-sm"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 1: Salary Breakdown & GOSI -->
+    <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6 space-y-6">
+      <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-3">
+        <span class="w-3 h-3 bg-emerald-600 rounded-full inline-block"></span>
+        تفاصيل الراتب والتأمينات الاجتماعية الشهريّة
+      </h2>
+
+      <!-- Total Salary Banner -->
+      <div class="bg-emerald-50 rounded-xl p-5 border border-emerald-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div class="w-full sm:w-1/2 space-y-1">
+          <label for="totalSalary" class="block text-xs font-bold text-emerald-900">الراتب الإجمالي الشامل (ريال)</label>
+          <input 
+            type="number" 
+            id="totalSalary" 
+            value="5000" 
+            onfocus="this.select()" 
+            oninput="calculateAll('total')"
+            class="w-full px-4 py-2.5 bg-white border border-emerald-300 rounded-xl focus:ring-2 focus:ring-emerald-500 font-black text-lg text-emerald-900 shadow-sm"
+          />
+        </div>
+        <button 
+          type="button" 
+          onclick="autoDistributeStandard()" 
+          class="w-full sm:w-auto px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-sm text-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span>توزيع تلقائي (قياسي بالسوق)</span>
+        </button>
+      </div>
+
+      <!-- Salary Sub-Fields -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="space-y-1">
+          <label for="basicSalary" class="block text-xs font-medium text-slate-600">الراتب الأساسي</label>
+          <input 
+            type="number" 
+            id="basicSalary" 
+            value="3704" 
+            onfocus="this.select()" 
+            oninput="calculateAll('basic')"
+            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 text-sm font-semibold"
+          />
+        </div>
+        <div class="space-y-1">
+          <label for="housingAllowance" class="block text-xs font-medium text-slate-600">بدل السكن</label>
+          <input 
+            type="number" 
+            id="housingAllowance" 
+            value="926" 
+            onfocus="this.select()" 
+            oninput="calculateAll('housing')"
+            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 text-sm font-semibold"
+          />
+        </div>
+        <div class="space-y-1">
+          <label for="transportAllowance" class="block text-xs font-medium text-slate-600">بدل النقل (يتعدل تلقائياً للموازنة)</label>
+          <input 
+            type="number" 
+            id="transportAllowance" 
+            value="370" 
+            onfocus="this.select()" 
+            oninput="calculateAll('transport')"
+            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 text-sm font-semibold bg-slate-50"
+          />
+        </div>
+      </div>
+
+      <!-- Net Salary Box -->
+      <div class="bg-emerald-700 text-white p-5 rounded-xl shadow-md flex justify-between items-center">
+        <div>
+          <p class="text-emerald-100 text-xs font-medium">صافي الراتب المستلم شهرياً</p>
+          <p id="netSalaryDisplay" class="text-2xl font-black mt-0.5">0.00 ر.س</p>
+        </div>
+        <div class="text-right">
+          <p class="text-emerald-100 text-xs">خصم التأمينات الشهري (9.75% للسعوديين)</p>
+          <p id="gosiDeductionDisplay" class="text-lg font-bold text-red-200 mt-0.5">-0.00 ر.س</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: End of Service & Leave Settlement -->
+    <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6 space-y-6">
+      <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-3">
+        <span class="w-3 h-3 bg-blue-600 rounded-full inline-block"></span>
+        تاريخ الخدمة وحساب خصم التأمينات التلقائي
+      </h2>
+
+      <!-- Dates & Ending Reason -->
+      <div class="bg-blue-50/70 p-5 rounded-xl border border-blue-100 space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="space-y-1">
+            <label for="startDate" class="block text-xs font-bold text-blue-900">تاريخ المباشرة (بداية العمل)</label>
+            <input 
+              type="date" 
+              id="startDate" 
+              value="2022-01-01" 
+              onfocus="this.select()" 
+              onchange="onDateOrSalaryChange()"
+              class="w-full px-3 py-2 bg-white border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm font-semibold"
+            />
+          </div>
+          <div class="space-y-1">
+            <label for="endDate" class="block text-xs font-bold text-blue-900">تاريخ نهاية العقد (تاريخ اليوم)</label>
+            <input 
+              type="date" 
+              id="endDate" 
+              onfocus="this.select()" 
+              onchange="onDateOrSalaryChange()"
+              class="w-full px-3 py-2 bg-white border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm font-semibold"
+            />
+          </div>
+        </div>
+
+        <div class="pt-2 border-t border-blue-200">
+          <label for="endReason" class="block text-xs font-bold text-blue-900 mb-2">سبب انتهاء العلاقة العمالية (وفق نظام العمل السعودي)</label>
+          <select 
+            id="endReason" 
+            onchange="calculateAll()" 
+            class="w-full px-3 py-2.5 bg-white border border-blue-300 rounded-xl focus:ring-2 focus:ring-blue-500 font-bold text-xs text-slate-800 shadow-sm"
+          >
+            <option value="contract_end" selected>انتهاء مدة العقد / اتفاق الطرفين (المادة 74 - فقرة 1 و 2)</option>
+            <option value="probation">فسخ العقد خلال فترة التجربة (المادة 53)</option>
+            <option value="resignation">استقالة الموظف (المادة 85)</option>
+            <option value="employer_termination">إنهاء الخدمة من قبل صاحب العمل لسبب مشروع (المادة 75)</option>
+            <option value="article_80">فسخ العقد من صاحب العمل بدون مكافأة لسبب مشروع (المادة 80)</option>
+            <option value="article_81">فسخ العقد من الموظف بسبب تقصير صاحب العمل (المادة 81)</option>
+            <option value="article_87">ترك العمل لظروف قاهرة / زواج / وضع (المادة 87)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Service Period Indicator & Full Tenure GOSI Box -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div class="flex flex-col justify-center items-center bg-slate-100 p-3 rounded-xl font-bold text-xs text-slate-700 text-center border border-slate-200">
+          <span class="text-slate-500 text-[11px]">مدة الخدمة الفعليّة:</span>
+          <span id="servicePeriodText" class="text-blue-800 font-extrabold text-sm mt-0.5">0 سنة، 0 شهر، 0 يوم</span>
+        </div>
+        <div class="flex flex-col justify-center items-center bg-amber-50 p-3 rounded-xl font-bold text-xs text-amber-950 text-center border border-amber-200">
+          <span class="text-amber-800 text-[11px]">إجمالي التأمينات الحسابية لكامل الفترة (<span id="totalTenureMonthsText">0</span> شهر):</span>
+          <span id="fullTenureGosiText" class="text-amber-900 font-black text-sm mt-0.5">0.00 ر.س</span>
+        </div>
+      </div>
+
+      <!-- Leaves & Debts Input -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="space-y-1">
+          <label for="leaveDaysPerYear" class="block text-xs font-semibold text-slate-600">استحقاق الإجازة السنوي (يوم)</label>
+          <input 
+            type="number" 
+            id="leaveDaysPerYear" 
+            value="21" 
+            onfocus="this.select()" 
+            oninput="calculateAll()"
+            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm font-semibold"
+          />
+        </div>
+        <div class="space-y-1">
+          <label for="usedLeaveDays" class="block text-xs font-semibold text-slate-600">أيام إجازات مستخدمة سابقاً</label>
+          <input 
+            type="number" 
+            id="usedLeaveDays" 
+            value="0" 
+            onfocus="this.select()" 
+            oninput="calculateAll()"
+            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm font-semibold"
+          />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-200 space-y-1">
+          <label for="unpaidSalary" class="block text-xs font-bold text-emerald-900">رواتب متأخرة (إضافة للمخالصة - مبلغ بالريال)</label>
+          <input 
+            type="number" 
+            id="unpaidSalary" 
+            value="0" 
+            onfocus="this.select()" 
+            oninput="calculateAll()"
+            class="w-full px-3 py-2 bg-white border border-emerald-300 rounded-lg focus:ring-2 focus:ring-emerald-500 text-sm font-bold text-emerald-900"
+            placeholder="مثال: 5000"
+          />
+        </div>
+
+        <!-- Unpaid GOSI Months Input with auto-fill helper -->
+        <div class="bg-red-50 p-4 rounded-xl border border-red-200 space-y-1">
+          <div class="flex justify-between items-center">
+            <label for="unpaidGosiMonths" class="block text-xs font-bold text-red-900">خصم متأخرات التأمينات (عدد الأشهر لم تُخصم)</label>
+            <button 
+              type="button" 
+              onclick="setAllTenureMonthsForGosi()"
+              class="text-[10px] bg-red-200 hover:bg-red-300 text-red-950 font-bold px-2 py-0.5 rounded transition-colors cursor-pointer"
+              title="تعيين عدد الأشهر المتبقية لتطابق كامل مدة الخدمة"
+            >
+              تحديد كلي (<span id="btnTenureMonthsCount">0</span> أشهر)
+            </button>
+          </div>
+          <input 
+            type="number" 
+            id="unpaidGosiMonths" 
+            value="0" 
+            onfocus="this.select()" 
+            oninput="calculateAll('userGosiMonths')"
+            class="w-full px-3 py-2 bg-white border border-red-300 rounded-lg focus:ring-2 focus:ring-red-500 text-sm font-bold text-red-900"
+            placeholder="مثال: 3"
+          />
+          <p class="text-[10px] text-red-700 font-semibold mt-1">
+            إجمالي المبلغ المخصوم للمتأخرات: <span id="calculatedUnpaidGosiAmount" class="font-extrabold text-red-900">0.00 ر.س</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Loans / Advances Deductions -->
+      <div class="bg-rose-50 p-4 rounded-xl border border-rose-200 space-y-1">
+        <label for="loansDeduction" class="block text-xs font-bold text-rose-900">سلف وعهد مالية (خصم من المخالصة - مبلغ بالريال)</label>
+        <input 
+          type="number" 
+          id="loansDeduction" 
+          value="0" 
+          onfocus="this.select()" 
+          oninput="calculateAll()"
+          class="w-full px-3 py-2 bg-white border border-rose-300 rounded-lg focus:ring-2 focus:ring-rose-500 text-sm font-bold text-rose-900"
+          placeholder="مثال: 1500"
+        />
+      </div>
+
+      <!-- Settlement Summary Card -->
+      <div class="bg-slate-900 text-white rounded-2xl p-6 space-y-4 shadow-xl">
+        <div class="flex justify-between items-center text-xs sm:text-sm border-b border-slate-800 pb-3">
+          <span class="text-slate-300" id="screenLeaveTitle">بدل الإجازات غير المستخدمة:</span>
+          <span id="screenLeaveValue" class="font-bold text-amber-400">0.00 ر.س</span>
+        </div>
+        <div class="flex justify-between items-center text-xs sm:text-sm border-b border-slate-800 pb-3">
+          <div>
+            <span class="text-slate-300">مكافأة نهاية الخدمة:</span>
+            <span id="screenEosbNote" class="block text-[10px] text-slate-400 mt-0.5">--</span>
+          </div>
+          <span id="screenEosbValue" class="font-bold text-emerald-400">0.00 ر.س</span>
+        </div>
+        
+        <div id="screenUnpaidSalaryRow" class="hidden flex justify-between items-center text-xs sm:text-sm border-b border-slate-800 pb-3">
+          <span class="text-emerald-300">رواتب متأخرة مستحقة:</span>
+          <span id="screenUnpaidSalaryValue" class="font-bold text-emerald-400">+0.00 ر.س</span>
+        </div>
+
+        <div id="screenUnpaidGosiRow" class="hidden flex justify-between items-center text-xs sm:text-sm border-b border-slate-800 pb-3">
+          <span class="text-red-300">خصم متأخرات التأمينات:</span>
+          <span id="screenUnpaidGosiValue" class="font-bold text-red-400">-0.00 ر.س</span>
+        </div>
+
+        <div id="screenLoansRow" class="hidden flex justify-between items-center text-xs sm:text-sm border-b border-slate-800 pb-3">
+          <span class="text-rose-300">خصم سلف وعهد مالية:</span>
+          <span id="screenLoansValue" class="font-bold text-rose-400">-0.00 ر.س</span>
+        </div>
+
+        <div class="flex justify-between items-center pt-2">
+          <span class="text-base sm:text-lg font-extrabold text-amber-300">إجمالي المستحقات النهائية (المخالصة):</span>
+          <span id="screenFinalSettlement" class="text-2xl sm:text-3xl font-black text-white">0.00 ر.س</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="text-center pt-2">
+      <button 
+        onclick="window.print()" 
+        class="w-full sm:w-auto px-8 py-3.5 bg-amber-600 hover:bg-amber-700 text-white font-extrabold rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 mx-auto cursor-pointer"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+        </svg>
+        <span>معاينة وطباعة التقرير النهائي (PDF/A4)</span>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ================= PRINT ONLY FORMAL A4 REPORT ================= -->
+  <div class="print-only max-w-4xl mx-auto space-y-2.5 text-slate-950 font-sans relative z-10">
+    
+    <!-- Formal Company Identity Header (Hidden as background has it) -->
+    <div class="hidden justify-between items-start border-b-2 border-amber-900 pb-2">
+      <div>
+        <h1 id="pCompanyName" class="text-base font-black text-amber-950 leading-tight">عبد الوهاب الشقحاء للذهب والمجوهرات</h1>
+        <p class="text-[9.5px] text-slate-800 font-bold mt-0.5"><span id="pCompanyCr">سجل تجاري: 1131054977 | الرقم المميز: 3022194302</span></p>
+        <p class="text-[8.5px] text-slate-600"><span id="pCompanyAddress">القصيم - بريدة - طريق الملك فيصل</span></p>
+      </div>
+      <div class="text-left">
+        <h2 class="text-xs font-black text-slate-900 uppercase">نموذج إنهاء العلاقة التعاقدية وتصفية المستحقات</h2>
+        <p class="text-[8.5px] text-slate-500 mt-0.5">تاريخ التوليد: <span id="printGeneratedDate" class="font-bold">--</span></p>
+      </div>
+    </div>
+
+    <!-- Generated Date -->
+    <div class="text-left mb-4">
+        <p class="text-[9px] text-slate-600 font-bold">التاريخ: <span id="printGeneratedDateVal" class="text-slate-900">--</span></p>
+    </div>
+
+    <!-- Employee & Service Details Grid Box -->
+    <div class="grid grid-cols-3 gap-x-3 gap-y-1 text-[9.5px] border border-slate-300 p-2 rounded-lg bg-slate-50">
+      <div>
+        <span class="text-slate-500 block text-[8.5px]">اسم الموظف:</span>
+        <span id="pEmployeeName" class="font-bold text-slate-900">--</span>
+      </div>
+      <div>
+        <span class="text-slate-500 block text-[8.5px]">رقم الهوية / الإقامة:</span>
+        <span id="pEmployeeId" class="font-bold text-slate-900">--</span>
+      </div>
+      <div>
+        <span class="text-slate-500 block text-[8.5px]">المسمى الوظيفي:</span>
+        <span id="pJobTitle" class="font-bold text-slate-900">--</span>
+      </div>
+      <div>
+        <span class="text-slate-500 block text-[8.5px]">تاريخ المباشرة:</span>
+        <span id="pStartDate" class="font-bold text-slate-900">--</span>
+      </div>
+      <div>
+        <span class="text-slate-500 block text-[8.5px]">تاريخ نهاية العقد:</span>
+        <span id="pEndDate" class="font-bold text-slate-900">--</span>
+      </div>
+      <div>
+        <span class="text-slate-500 block text-[8.5px]">مدة الخدمة الفعليّة:</span>
+        <span id="pServicePeriod" class="font-bold text-slate-900">--</span>
+      </div>
+      <div class="col-span-3 border-t border-slate-200 pt-1 mt-0.5 flex justify-between items-center text-[9px]">
+        <div>
+          <span class="text-slate-500">سبب انتهاء العلاقة العمالية:</span>
+          <span id="pEndReason" class="font-bold text-slate-900 mx-1">--</span>
+        </div>
+        <div>
+          <span class="text-slate-500">إجمالي التأمينات الحسابية للمدة (<span id="pFullTenureMonths">0</span> شهر):</span>
+          <span id="pFullTenureGosi" class="font-bold text-amber-950 mx-1">0.00 ر.س</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Salary Details Table -->
+    <div>
+      <h3 class="text-[9.5px] font-bold text-slate-900 mb-0.5 border-r-4 border-amber-900 pr-1.5">تفاصيل أجر الموظف الشهرية</h3>
+      <table class="w-full text-[9px] border-collapse border border-slate-300 text-center">
+        <thead>
+          <tr class="bg-slate-100 font-bold">
+            <th class="border border-slate-300 p-1">الراتب الأساسي</th>
+            <th class="border border-slate-300 p-1">بدل السكن</th>
+            <th class="border border-slate-300 p-1">بدل النقل</th>
+            <th class="border border-slate-300 p-1">الراتب الإجمالي الشامل</th>
+            <th class="border border-slate-300 p-1">خصم التأمينات (9.75%)</th>
+            <th class="border border-slate-300 p-1">صافي الراتب المستلم</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td id="pBasic" class="border border-slate-300 p-1">0.00 ر.س</td>
+            <td id="pHousing" class="border border-slate-300 p-1">0.00 ر.س</td>
+            <td id="pTransport" class="border border-slate-300 p-1">0.00 ر.س</td>
+            <td id="pTotalSalary" class="border border-slate-300 p-1 font-bold">0.00 ر.س</td>
+            <td id="pGosiDeduction" class="border border-slate-300 p-1 text-red-700">-0.00 ر.س</td>
+            <td id="pNetSalary" class="border border-slate-300 p-1 font-bold text-emerald-800">0.00 ر.س</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Detailed Settlement Table -->
+    <div>
+      <h3 class="text-[9.5px] font-bold text-slate-900 mb-0.5 border-r-4 border-amber-900 pr-1.5">تفاصيل وتصفية المستحقات المالية النهائيّة</h3>
+      <table class="w-full text-[9px] border-collapse border border-slate-300">
+        <thead>
+          <tr class="bg-slate-100 font-bold text-right">
+            <th class="border border-slate-300 p-1">بند المستحق / الخصم</th>
+            <th class="border border-slate-300 p-1 text-left">المبلغ بالريال السعودي</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="border border-slate-300 p-1 font-medium">
+              <span id="pLeaveTitle">بدل الإجازات غير المستخدمة (0 يوم):</span>
+            </td>
+            <td id="pLeaveValue" class="border border-slate-300 p-1 text-left font-bold">0.00 ر.س</td>
+          </tr>
+          <tr>
+            <td class="border border-slate-300 p-1 font-medium">
+              مكافأة نهاية الخدمة:
+              <span id="pEosbNote" class="block text-[8px] text-slate-500 font-normal">--</span>
+            </td>
+            <td id="pEosbValue" class="border border-slate-300 p-1 text-left font-bold">0.00 ر.س</td>
+          </tr>
+          <tr id="pUnpaidSalaryRow">
+            <td class="border border-slate-300 p-1 font-medium text-emerald-900">رواتب متأخرة (إضافة للمخالصة):</td>
+            <td id="pUnpaidSalaryValue" class="border border-slate-300 p-1 text-left font-bold text-emerald-800">+0.00 ر.س</td>
+          </tr>
+          <tr id="pUnpaidGosiRow">
+            <td class="border border-slate-300 p-1 font-medium text-red-700">
+              خصم متأخرات التأمينات (<span id="pGosiMonthsCount">0</span> أشهر):
+            </td>
+            <td id="pUnpaidGosiValue" class="border border-slate-300 p-1 text-left font-bold text-red-700">-0.00 ر.س</td>
+          </tr>
+          <tr id="pLoansRow">
+            <td class="border border-slate-300 p-1 font-medium text-rose-700">خصم سلف وعهد مالية:</td>
+            <td id="pLoansValue" class="border border-slate-300 p-1 text-left font-bold text-rose-700">-0.00 ر.س</td>
+          </tr>
+          <tr class="bg-slate-100 font-extrabold text-xs">
+            <td class="border border-slate-300 p-1.5">إجمالي المستحقات النهائية (المخالصة):</td>
+            <td id="pFinalSettlement" class="border border-slate-300 p-1.5 text-left text-slate-950 font-black text-xs">0.00 ر.س</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Official Stamp and Signatures Block -->
+    <div class="pt-1 grid grid-cols-3 gap-2.5 text-[9px]">
+      
+      <!-- Employee Signature -->
+      <div class="border border-slate-300 p-2 rounded-lg space-y-2 text-center">
+        <p class="font-bold border-b border-slate-200 pb-0.5">إقرار وتوقيع الموظف</p>
+        <p class="text-slate-600 text-[8px] leading-tight text-right">أقر أنا الموظف/ <span id="pSignatureEmployeeName" class="font-bold text-slate-900">--</span> بأني استلمت كافة مستحقاتي الموضحة أعلاه ولا يحق لي المطالبة بأي مبالغ أخرى.</p>
+        <div class="pt-0.5 text-right space-y-0.5 text-[8.5px] text-slate-800">
+          <p>التوقيع: .......................................</p>
+          <p>التاريخ: ..... / ..... / ...........20 م</p>
+        </div>
+      </div>
+
+      <!-- Manager / HR Clearance -->
+      <div class="border border-slate-300 p-2 rounded-lg space-y-2 text-center">
+        <p class="font-bold border-b border-slate-200 pb-0.5">إدارة المنشأة / المستلم</p>
+        <p class="text-slate-600 text-[8px] leading-tight text-right">تم مراجعة وتدقيق المستحقات وإعداد بيان المخالصة وفق أحكام نظام العمل السعودي.</p>
+        <div class="pt-0.5 text-right space-y-0.5 text-[8.5px] text-slate-800">
+          <p>المسؤول: <span id="pSignatureManagerName" class="font-bold text-slate-900">--</span></p>
+          <p>التوقيع: .......................................</p>
+        </div>
+      </div>
+
+      <!-- Official Company Stamp Box -->
+      <div class="border-2 border-dashed border-amber-900/40 p-2 rounded-lg flex flex-col justify-between items-center text-center bg-amber-50/20">
+        <p class="font-bold text-[9px] text-amber-950">ختم المؤسسة الرسمي</p>
+        <div class="text-[8px] text-slate-500 py-1">
+          عبد الوهاب الشقحاء للذهب والمجوهرات
+          <br>
+          س.ت: 1131054977
+        </div>
+        <p class="text-[7px] text-slate-400">يلزم الختم والتوقيع للاعتماد الرسمـي</p>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ================= JAVASCRIPT LOGIC ================= -->
+  <script>
+    let isUserModifiedGosiMonths = false;
+
+    // Initialize defaults on DOM load
+    document.addEventListener('DOMContentLoaded', () => {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('endDate').value = today;
+      const formattedDate = new Date().toLocaleDateString('ar-SA');
+      if(document.getElementById('printGeneratedDate')) document.getElementById('printGeneratedDate').innerText = formattedDate;
+      if(document.getElementById('printGeneratedDateVal')) document.getElementById('printGeneratedDateVal').innerText = formattedDate;
+      
+      // Auto-set initial months for GOSI
+      onDateOrSalaryChange();
+    });
+
+    // When dates change or start up, update total period and optionally auto-fill GOSI months
+    function onDateOrSalaryChange() {
+      const startDateStr = document.getElementById('startDate').value;
+      const endDateStr = document.getElementById('endDate').value;
+      const period = calculateServicePeriod(startDateStr, endDateStr);
+
+      const roundedMonths = Math.round(period.totalMonths);
+      document.getElementById('btnTenureMonthsCount').innerText = roundedMonths;
+
+      // Auto populate if user hasn't typed custom months
+      if (!isUserModifiedGosiMonths) {
+        document.getElementById('unpaidGosiMonths').value = roundedMonths;
+      }
+
+      calculateAll();
+    }
+
+    // Quick action button to set GOSI months equal to full tenure months
+    function setAllTenureMonthsForGosi() {
+      const startDateStr = document.getElementById('startDate').value;
+      const endDateStr = document.getElementById('endDate').value;
+      const period = calculateServicePeriod(startDateStr, endDateStr);
+      
+      const roundedMonths = Math.round(period.totalMonths);
+      document.getElementById('unpaidGosiMonths').value = roundedMonths;
+      isUserModifiedGosiMonths = true;
+      calculateAll();
+    }
+
+    // Auto-distribute standard market rates (Basic ~ 74%, Housing ~ 18.5%, Transport ~ 7.5%)
+    function autoDistributeStandard() {
+      const totalSalary = parseFloat(document.getElementById('totalSalary').value) || 0;
+      if (totalSalary <= 0) return;
+
+      const basic = Math.round(totalSalary / 1.35);
+      const housing = Math.round(basic * 0.25);
+      const transport = Math.round(totalSalary - basic - housing);
+
+      document.getElementById('basicSalary').value = basic;
+      document.getElementById('housingAllowance').value = housing;
+      document.getElementById('transportAllowance').value = transport;
+
+      calculateAll();
+    }
+
+    // Main Calculation Engine
+    function calculateAll(changedField = null) {
+      if (changedField === 'userGosiMonths') {
+        isUserModifiedGosiMonths = true;
+      }
+
+      let totalSalary = parseFloat(document.getElementById('totalSalary').value) || 0;
+      let basic = parseFloat(document.getElementById('basicSalary').value) || 0;
+      let housing = parseFloat(document.getElementById('housingAllowance').value) || 0;
+      let transport = parseFloat(document.getElementById('transportAllowance').value) || 0;
+
+      // Logic to auto balance Transport or Total based on input changes
+      if (changedField === 'total') {
+        transport = Math.max(0, totalSalary - (basic + housing));
+        document.getElementById('transportAllowance').value = transport;
+      } else if (changedField === 'basic' || changedField === 'housing') {
+        transport = Math.max(0, totalSalary - (basic + housing));
+        document.getElementById('transportAllowance').value = transport;
+      } else if (changedField === 'transport') {
+        totalSalary = basic + housing + transport;
+        document.getElementById('totalSalary').value = totalSalary;
+      }
+
+      // GOSI Monthly Deduction (9.75% of Basic + Housing)
+      const gosiSubjectAmount = basic + housing;
+      const gosiDeduction = gosiSubjectAmount * 0.0975;
+      const netSalary = totalSalary - gosiDeduction;
+
+      document.getElementById('netSalaryDisplay').innerText = formatCurrency(netSalary);
+      document.getElementById('gosiDeductionDisplay').innerText = `-${formatCurrency(gosiDeduction)}`;
+
+      // Service Period Calculation
+      const startDateStr = document.getElementById('startDate').value;
+      const endDateStr = document.getElementById('endDate').value;
+      
+      const period = calculateServicePeriod(startDateStr, endDateStr);
+      const periodText = `${period.years} سنة، ${period.months} شهر، ${period.days} يوم`;
+      document.getElementById('servicePeriodText').innerText = periodText;
+
+      // Automatic Full Tenure GOSI calculation
+      const roundedTenureMonths = Math.round(period.totalMonths);
+      const fullTenureGosiAmount = period.totalMonths * gosiDeduction;
+      
+      document.getElementById('totalTenureMonthsText').innerText = roundedTenureMonths;
+      document.getElementById('fullTenureGosiText').innerText = formatCurrency(fullTenureGosiAmount);
+      document.getElementById('btnTenureMonthsCount').innerText = roundedTenureMonths;
+
+      // Unpaid Salary Input
+      const unpaidSalaryAmount = parseFloat(document.getElementById('unpaidSalary').value) || 0;
+
+      // Leave Calculation
+      const leaveDaysPerYear = parseFloat(document.getElementById('leaveDaysPerYear').value) || 0;
+      const usedLeaveDays = parseFloat(document.getElementById('usedLeaveDays').value) || 0;
+      
+      const totalEarnedLeaveDays = period.totalYears * leaveDaysPerYear;
+      const remainingLeaveDays = Math.max(0, totalEarnedLeaveDays - usedLeaveDays);
+      
+      // حساب يومية بدل الإجازة بناءً على مبلغ الرواتب المتأخرة فقط كما طلبت
+      const dailyRateForLeave = unpaidSalaryAmount / 30; 
+      const leaveValue = remainingLeaveDays * dailyRateForLeave;
+
+      // End of Service Benefit (EOSB) Calculation (Saudi Labor Law Dropdown)
+      const endReasonSelect = document.getElementById('endReason');
+      const endReason = endReasonSelect ? endReasonSelect.value : 'contract_end';
+
+      const eosbBaseSalary = basic + housing; // EOSB base is Basic + Housing
+      let fullEosbReward = 0;
+      if (period.totalYears <= 5) {
+        fullEosbReward = period.totalYears * (eosbBaseSalary / 2);
+      } else {
+        const first5Years = 5 * (eosbBaseSalary / 2);
+        const extraYears = (period.totalYears - 5) * eosbBaseSalary;
+        fullEosbReward = first5Years + extraYears;
+      }
+
+      let eosbAmount = 0;
+      let eosbNote = '';
+
+      if (endReason === 'probation') {
+        eosbAmount = 0;
+        eosbNote = 'غير مستحق (فسخ العقد خلال فترة التجربة - المادة 53)';
+      } else if (endReason === 'article_80') {
+        eosbAmount = 0;
+        eosbNote = 'غير مستحق (فسخ العقد لمخالفة المادة 80)';
+      } else if (period.totalYears < 1) {
+        eosbAmount = 0;
+        eosbNote = 'غير مستحق (لم يكمل سنة كاملة)';
+      } else if (endReason === 'resignation') {
+        if (period.totalYears >= 1 && period.totalYears < 2) {
+          eosbAmount = 0;
+          eosbNote = 'غير مستحق (استقالة - خدمة أقل من سنتين - المادة 85)';
+        } else if (period.totalYears >= 2 && period.totalYears < 5) {
+          eosbAmount = fullEosbReward / 3;
+          eosbNote = 'ثلث المكافأة (استقالة - من 2 إلى 5 سنوات - المادة 85)';
+        } else if (period.totalYears >= 5 && period.totalYears < 10) {
+          eosbAmount = fullEosbReward * (2 / 3);
+          eosbNote = 'ثلثي المكافأة (استقالة - من 5 إلى 10 سنوات - المادة 85)';
+        } else {
+          eosbAmount = fullEosbReward;
+          eosbNote = 'المكافأة كاملة (استقالة - خدمة 10 سنوات فأكثر - المادة 85)';
+        }
+      } else if (endReason === 'article_81') {
+        eosbAmount = fullEosbReward;
+        eosbNote = 'المكافأة كاملة (ترك العمل لسبب مشروع من صاحب العمل - المادة 81)';
+      } else if (endReason === 'article_87') {
+        eosbAmount = fullEosbReward;
+        eosbNote = 'المكافأة كاملة (ظروف قاهرة / استقالة امرأة عاملة - المادة 87)';
+      } else {
+        eosbAmount = fullEosbReward;
+        eosbNote = 'المكافأة كاملة (انتهاء مدة العقد / اتفاق الطرفين / إنهاء مشروع)';
+      }
+
+      // Unpaid GOSI Deductions
+      const unpaidGosiMonths = parseFloat(document.getElementById('unpaidGosiMonths').value) || 0;
+      const totalUnpaidGosiDeduction = unpaidGosiMonths * gosiDeduction;
+
+      document.getElementById('calculatedUnpaidGosiAmount').innerText = formatCurrency(totalUnpaidGosiDeduction);
+
+      // Loans / Advances Deduction
+      const loansDeductionAmount = parseFloat(document.getElementById('loansDeduction').value) || 0;
+
+      // Final Settlement Sum
+      const finalSettlement = leaveValue + eosbAmount + unpaidSalaryAmount - totalUnpaidGosiDeduction - loansDeductionAmount;
+
+      // Update Screen Values
+      const leaveTitleText = `بدل الإجازات غير المستخدمة (${remainingLeaveDays.toFixed(1)} يوم):`;
+      document.getElementById('screenLeaveTitle').innerText = leaveTitleText;
+      document.getElementById('screenLeaveValue').innerText = formatCurrency(leaveValue);
+      document.getElementById('screenEosbNote').innerText = eosbNote;
+      document.getElementById('screenEosbValue').innerText = formatCurrency(eosbAmount);
+
+      const screenUnpaidSalRow = document.getElementById('screenUnpaidSalaryRow');
+      if (unpaidSalaryAmount > 0) {
+        screenUnpaidSalRow.classList.remove('hidden');
+        document.getElementById('screenUnpaidSalaryValue').innerText = `+${formatCurrency(unpaidSalaryAmount)}`;
+      } else {
+        screenUnpaidSalRow.classList.add('hidden');
+      }
+
+      const screenUnpaidGosiRow = document.getElementById('screenUnpaidGosiRow');
+      if (unpaidGosiMonths > 0) {
+        screenUnpaidGosiRow.classList.remove('hidden');
+        document.getElementById('screenUnpaidGosiValue').innerText = `-${formatCurrency(totalUnpaidGosiDeduction)}`;
+      } else {
+        screenUnpaidGosiRow.classList.add('hidden');
+      }
+
+      const screenLoansRow = document.getElementById('screenLoansRow');
+      if (loansDeductionAmount > 0) {
+        screenLoansRow.classList.remove('hidden');
+        document.getElementById('screenLoansValue').innerText = `-${formatCurrency(loansDeductionAmount)}`;
+      } else {
+        screenLoansRow.classList.add('hidden');
+      }
+
+      document.getElementById('screenFinalSettlement').innerText = formatCurrency(finalSettlement);
+
+      // Populate Print Report Fields
+      updatePrintReport({
+        startDateStr,
+        endDateStr,
+        periodText,
+        roundedTenureMonths,
+        fullTenureGosiAmount,
+        endReason,
+        basic,
+        housing,
+        transport,
+        totalSalary,
+        gosiDeduction,
+        netSalary,
+        remainingLeaveDays,
+        leaveValue,
+        eosbNote,
+        eosbAmount,
+        unpaidSalaryAmount,
+        unpaidGosiMonths,
+        totalUnpaidGosiDeduction,
+        loansDeductionAmount,
+        finalSettlement
+      });
+    }
+
+    // Helper: Calculate exact period in Years, Months, Days & Total Months
+    function calculateServicePeriod(startStr, endStr) {
+      if (!startStr || !endStr) return { years: 0, months: 0, days: 0, totalYears: 0, totalMonths: 0 };
+      
+      const start = new Date(startStr);
+      const end = new Date(endStr);
+      if (end < start) return { years: 0, months: 0, days: 0, totalYears: 0, totalMonths: 0 };
+
+      const diffTime = Math.abs(end - start);
+      const totalDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const totalYears = totalDays / 365.25;
+      const totalMonths = totalDays / 30.4375; // average days in a month
+
+      let years = end.getFullYear() - start.getFullYear();
+      let months = end.getMonth() - start.getMonth();
+      let days = end.getDate() - start.getDate();
+
+      if (days < 0) {
+        months--;
+        const tempDate = new Date(end.getFullYear(), end.getMonth(), 0);
+        days += tempDate.getDate();
+      }
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+
+      return { years, months, days, totalYears, totalMonths };
+    }
+
+    // Populate Print Page HTML Dynamic Content
+    function updatePrintReport(data) {
+      const companyName = document.getElementById('companyName').value || '--';
+      const companyCr = document.getElementById('companyCr').value || '--';
+      const companyAddress = document.getElementById('companyAddress').value || '--';
+      const employeeName = document.getElementById('employeeName').value || 'غير محدد';
+      const employeeId = document.getElementById('employeeId').value || 'غير محدد';
+      const jobTitle = document.getElementById('jobTitle').value || 'غير محدد';
+      const managerName = document.getElementById('managerName').value || 'فهد بن سليمان المتوزي';
+
+      document.getElementById('pCompanyName').innerText = companyName;
+      document.getElementById('pCompanyCr').innerText = companyCr;
+      document.getElementById('pCompanyAddress').innerText = companyAddress;
+      
+      document.getElementById('pEmployeeName').innerText = employeeName;
+      document.getElementById('pEmployeeId').innerText = employeeId;
+      document.getElementById('pJobTitle').innerText = jobTitle;
+      document.getElementById('pSignatureEmployeeName').innerText = employeeName;
+      document.getElementById('pSignatureManagerName').innerText = managerName;
+
+      document.getElementById('pStartDate').innerText = data.startDateStr;
+      document.getElementById('pEndDate').innerText = data.endDateStr;
+      document.getElementById('pServicePeriod').innerText = data.periodText;
+      document.getElementById('pFullTenureMonths').innerText = data.roundedTenureMonths;
+      document.getElementById('pFullTenureGosi').innerText = formatCurrency(data.fullTenureGosiAmount);
+
+      const endReasonSelect = document.getElementById('endReason');
+      const reasonSelectedText = endReasonSelect ? endReasonSelect.options[endReasonSelect.selectedIndex].text : '--';
+      document.getElementById('pEndReason').innerText = reasonSelectedText;
+
+      document.getElementById('pBasic').innerText = formatCurrency(data.basic);
+      document.getElementById('pHousing').innerText = formatCurrency(data.housing);
+      document.getElementById('pTransport').innerText = formatCurrency(data.transport);
+      document.getElementById('pTotalSalary').innerText = formatCurrency(data.totalSalary);
+      document.getElementById('pGosiDeduction').innerText = `-${formatCurrency(data.gosiDeduction)}`;
+      document.getElementById('pNetSalary').innerText = formatCurrency(data.netSalary);
+
+      document.getElementById('pLeaveTitle').innerText = `بدل الإجازات غير المستخدمة (${data.remainingLeaveDays.toFixed(1)} يوم):`;
+      document.getElementById('pLeaveValue').innerText = formatCurrency(data.leaveValue);
+      
+      document.getElementById('pEosbNote').innerText = data.eosbNote;
+      document.getElementById('pEosbValue').innerText = formatCurrency(data.eosbAmount);
+
+      const pUnpaidSalRow = document.getElementById('pUnpaidSalaryRow');
+      if (data.unpaidSalaryAmount > 0) {
+        pUnpaidSalRow.classList.remove('hidden');
+        document.getElementById('pUnpaidSalaryValue').innerText = `+${formatCurrency(data.unpaidSalaryAmount)}`;
+      } else {
+        pUnpaidSalRow.classList.add('hidden');
+      }
+
+      const pUnpaidGosiRow = document.getElementById('pUnpaidGosiRow');
+      if (data.unpaidGosiMonths > 0) {
+        pUnpaidGosiRow.classList.remove('hidden');
+        document.getElementById('pGosiMonthsCount').innerText = data.unpaidGosiMonths;
+        document.getElementById('pUnpaidGosiValue').innerText = `-${formatCurrency(data.totalUnpaidGosiDeduction)}`;
+      } else {
+        pUnpaidGosiRow.classList.add('hidden');
+      }
+
+      const pLoansRow = document.getElementById('pLoansRow');
+      if (data.loansDeductionAmount > 0) {
+        pLoansRow.classList.remove('hidden');
+        document.getElementById('pLoansValue').innerText = `-${formatCurrency(data.loansDeductionAmount)}`;
+      } else {
+        pLoansRow.classList.add('hidden');
+      }
+
+      document.getElementById('pFinalSettlement').innerText = formatCurrency(data.finalSettlement);
+    }
+
+    // Currency Formatting Utility
+    function formatCurrency(amount) {
+      return new Intl.NumberFormat('ar-SA', { 
+        style: 'currency', 
+        currency: 'SAR',
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 0 
+      }).format(amount || 0);
+    }
+  </script>
+</body>
+</html>
